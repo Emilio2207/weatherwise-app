@@ -25,7 +25,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { lat, lon } = req.query;
+    if (!req.url) {
+      return res.status(400).json({ error: "URL is required" });
+    }
+
+    const searchParams = new URLSearchParams(req.url.split("?")[1]);
+    const lat = searchParams.get("lat");
+    const lon = searchParams.get("lon");
 
     if (!lat || !lon) {
       return res.status(400).json({ error: "Latitude and longitude are required" });
